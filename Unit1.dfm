@@ -141,8 +141,18 @@ object Form1: TForm1
       '    # '#32080#26524#12434'JSON'#24418#24335#12391#20986#21147
       '    print(json.dumps(result, ensure_ascii=False, indent=2))'
       '')
+    ScrollBars = ssVertical
     TabOrder = 4
     Visible = False
+  end
+  object Memo3: TMemo
+    Left = 63
+    Top = 552
+    Width = 267
+    Height = 113
+    Lines.Strings = (
+      'Memo3')
+    TabOrder = 5
   end
   object OpenPictureDialog1: TOpenPictureDialog
     Left = 120
@@ -156,7 +166,7 @@ object Form1: TForm1
   object PythonGUIInputOutput1: TPythonGUIInputOutput
     UnicodeIO = True
     RawOutput = False
-    Output = Memo2
+    Output = Memo3
     Left = 296
     Top = 216
   end
@@ -166,5 +176,19 @@ object Form1: TForm1
     VarName = 'image_path'
     Left = 288
     Top = 448
+  end
+  object PythonModule1: TPythonModule
+    Engine = PythonEngine1
+    ModuleName = 'ultralytics'
+    Errors = <>
+    Left = 288
+    Top = 392
+  end
+  object PythonModule2: TPythonModule
+    Engine = PythonEngine1
+    ModuleName = 'numpy'
+    Errors = <>
+    Left = 408
+    Top = 392
   end
 end
