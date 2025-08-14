@@ -71,8 +71,7 @@ def save_annotated_image(image_path, output_path, detections):
     cv2.imwrite(output_path, img)
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("使用法: python yolo_detector.py <image_path> [model_path] [conf_threshold] [output_path]")
+    if len(sys.argv) < 2:        
         sys.exit(1)
     
     image_path = sys.argv[1]
@@ -86,7 +85,3 @@ if __name__ == "__main__":
     # 結果をJSON形式で出力
     print(json.dumps(result, ensure_ascii=False, indent=2))
     
-    # 検出結果がある場合、注釈付き画像を保存
-    if result['success'] and result['detections']:
-        save_annotated_image(image_path, output_path, result['detections'])
-        print(f"注釈付き画像を {output_path} に保存しました")

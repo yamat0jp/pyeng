@@ -39,10 +39,6 @@ type
     Image1: TImage;
     OpenPictureDialog1: TOpenPictureDialog;
     Button1: TButton;
-    PythonEngine1: TPythonEngine;
-    Memo1: TMemo;
-    PythonGUIInputOutput1: TPythonGUIInputOutput;
-    PythonDelphiVar1: TPythonDelphiVar;
     procedure btnDetectClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -142,9 +138,7 @@ begin
     LogMessage('YOLO検出を開始...');
 
     ConfThreshold := TrackBar1.Position / 100.0;
-    PythonDelphiVar1.Value:=OpenPictureDialog1.FileName;
-    PythonEngine1.ExecStrings(Memo1.Lines);
-//    Detections := FYOLODetector.DetectObjects(FCurrentImagePath, ConfThreshold);
+    Detections := FYOLODetector.DetectObjects(FCurrentImagePath, ConfThreshold);
 
     LogMessage(Format('%d個のオブジェクトを検出しました', [Length(Detections)]));
 
@@ -207,19 +201,8 @@ begin
       raise Exception.Create('Python スクリプトの実行に失敗しました');
     end;
 
-    var
-    ls := TStringList.Create;
-    try
-      ls.Text := Output;
-      ls.Delete(0);
-      ls.Delete(0);
-      ls.Delete(0);
-      ls.Delete(ls.Count - 1);
-      Output := ls.Text;
-    finally
-      ls.Free;
-    end;
     // JSON を解析
+    Delete(Output, 1, Pos('{', Output, 1) - 1);
     JSONValue := TJSONObject.ParseJSONValue(Output);
     if not Assigned(JSONValue) then
       raise Exception.Create('JSON の解析に失敗しました');
