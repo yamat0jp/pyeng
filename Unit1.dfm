@@ -45,6 +45,7 @@ object Form1: TForm1
     Max = 100
     Position = 25
     TabOrder = 1
+    OnChange = TrackBar1Change
   end
   object Memo2: TMemo
     Left = 31
@@ -136,7 +137,9 @@ object Form1: TForm1
       'conf_threshold = 0.25'
       ''
       '    # '#29289#20307#26908#20986#23455#34892
-      'result = detect_objects(image.value, model_path, conf_threshold)'
+      
+        'result = detect_objects(image.value, model_path, threshold.value' +
+        ')'
       ''
       '    # '#32080#26524#12434'JSON'#24418#24335#12391#20986#21147
       'print(json.dumps(result, ensure_ascii=False, indent=2))')
@@ -153,6 +156,8 @@ object Form1: TForm1
     Lines.Strings = (
       'Memo3')
     TabOrder = 5
+    Visible = False
+    WordWrap = False
   end
   object OpenPictureDialog1: TOpenPictureDialog
     Left = 120
@@ -176,5 +181,12 @@ object Form1: TForm1
     VarName = 'image'
     Left = 288
     Top = 448
+  end
+  object PythonDelphiVar2: TPythonDelphiVar
+    Engine = PythonEngine1
+    Module = '__main__'
+    VarName = 'threshold'
+    Left = 288
+    Top = 520
   end
 end

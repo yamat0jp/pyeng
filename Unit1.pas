@@ -43,10 +43,12 @@ type
     PythonGUIInputOutput1: TPythonGUIInputOutput;
     PythonDelphiVar1: TPythonDelphiVar;
     Memo3: TMemo;
+    PythonDelphiVar2: TPythonDelphiVar;
     procedure btnDetectClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure Button1Click(Sender: TObject);
+    procedure TrackBar1Change(Sender: TObject);
   private
     FYOLODetector: TYOLODetector;
     procedure DrawDetections(const Detections: TArray<TDetectionResult>);
@@ -65,68 +67,9 @@ uses JSON, Jpeg, System.Generics.Collections, System.StrUtils;
 
 {$R *.dfm}
 
-function RunCommand(const Command: string; out Output: string): Boolean;
-var
-  SA: TSecurityAttributes;
-  SI: TStartupInfo;
-  PI: TProcessInformation;
-  StdOutPipeRead, StdOutPipeWrite: THandle;
-  Buffer: array [0 .. 255] of AnsiChar;
-  BytesRead: Cardinal;
-  WorkDir: string;
-  CommandLine: string;
-begin
-  Result := False;
-  Output := '';
-
-  SA.nLength := SizeOf(SA);
-  SA.bInheritHandle := True;
-  SA.lpSecurityDescriptor := nil;
-
-  if CreatePipe(StdOutPipeRead, StdOutPipeWrite, @SA, 0) then
-  begin
-    try
-      FillChar(SI, SizeOf(SI), 0);
-      SI.cb := SizeOf(SI);
-      SI.dwFlags := STARTF_USESHOWWINDOW or STARTF_USESTDHANDLES;
-      SI.wShowWindow := SW_HIDE;
-      SI.hStdInput := GetStdHandle(STD_INPUT_HANDLE);
-      SI.hStdOutput := StdOutPipeWrite;
-      SI.hStdError := StdOutPipeWrite;
-
-      WorkDir := GetCurrentDir;
-      CommandLine := 'cmd.exe /C ' + Command;
-
-      if CreateProcess(nil, PChar(CommandLine), nil, nil, True, 0, nil,
-        PChar(WorkDir), SI, PI) then
-      begin
-        try
-          CloseHandle(StdOutPipeWrite);
-
-          repeat
-            if not ReadFile(StdOutPipeRead, Buffer, 255, BytesRead, nil) then
-              Break;
-            Buffer[BytesRead] := #0;
-            Output := Output + string(AnsiString(Buffer));
-          until BytesRead = 0;
-
-          WaitForSingleObject(PI.hProcess, INFINITE);
-          Result := True;
-        finally
-          CloseHandle(PI.hProcess);
-          CloseHandle(PI.hThread);
-        end;
-      end;
-    finally
-      CloseHandle(StdOutPipeRead);
-    end;
-  end;
-end;
-
 procedure TForm1.btnDetectClick(Sender: TObject);
 var
   Detections: TArray<TDetectionResult>;
-  ConfThreshold: Double;
 begin
   if Image1.Picture.Graphic.Empty then
   begin
@@ -138,19 +81,20 @@ begin
   try
     LogMessage('YOLO検出を開始...');
 
-    ConfThreshold := TrackBar1.Position / 100.0;
     PythonDelphiVar1.Value := OpenPictureDialog1.FileName;
     Memo3.Lines.Clear;
     PythonEngine1.ExecStrings(Memo1.Lines);
+    for var i := 1 to 3 do
+      Memo3.Lines.Delete(0);
     Detections := FYOLODetector.DetectObjects(Memo3.Text);
 
     LogMessage(Format('%d個のオブジェクトを検出しました', [Length(Detections)]));
 
-    for var I := 0 to High(Detections) do
+    for var i := 0 to High(Detections) do
       LogMessage(Format('[%d] %s (信頼度: %.2f%%) - 座標: (%.0f, %.0f, %.0f, %.0f)',
-        [I + 1, Detections[I].ClassName, Detections[I].Confidence * 100,
-        Detections[I].BBox[0], Detections[I].BBox[1], Detections[I].BBox[2],
-        Detections[I].BBox[3]]));
+        [i + 1, Detections[i].ClassName, Detections[i].Confidence * 100,
+        Detections[i].BBox[0], Detections[i].BBox[1], Detections[i].BBox[2],
+        Detections[i].BBox[3]]));
 
     // 検出結果を画像に描画
     DrawDetections(Detections);
@@ -185,7 +129,7 @@ var
   DetectionObj: TJSONObject;
   BBoxArray: TJSONArray;
   Results: TArray<TDetectionResult>;
-  I: Integer;
+  i: Integer;
   Success: Boolean;
 begin
   SetLength(Results, 0);
@@ -209,19 +153,19 @@ begin
       DetectionsArray := JSONObject.GetValue('detections') as TJSONArray;
       SetLength(Results, DetectionsArray.Count);
 
-      for I := 0 to DetectionsArray.Count - 1 do
+      for i := 0 to DetectionsArray.Count - 1 do
       begin
-        DetectionObj := DetectionsArray.Items[I] as TJSONObject;
+        DetectionObj := DetectionsArray.Items[i] as TJSONObject;
         BBoxArray := DetectionObj.GetValue('bbox') as TJSONArray;
 
-        Results[I].BBox[0] := BBoxArray.Items[0].AsType<Double>;
-        Results[I].BBox[1] := BBoxArray.Items[1].AsType<Double>;
-        Results[I].BBox[2] := BBoxArray.Items[2].AsType<Double>;
-        Results[I].BBox[3] := BBoxArray.Items[3].AsType<Double>;
-        Results[I].Confidence := DetectionObj.GetValue('confidence')
+        Results[i].BBox[0] := BBoxArray.Items[0].AsType<Double>;
+        Results[i].BBox[1] := BBoxArray.Items[1].AsType<Double>;
+        Results[i].BBox[2] := BBoxArray.Items[2].AsType<Double>;
+        Results[i].BBox[3] := BBoxArray.Items[3].AsType<Double>;
+        Results[i].Confidence := DetectionObj.GetValue('confidence')
           .AsType<Double>;
-        Results[I].ClassID := DetectionObj.GetValue('class_id').AsType<Integer>;
-        Results[I].ClassName := DetectionObj.GetValue('class_name')
+        Results[i].ClassID := DetectionObj.GetValue('class_id').AsType<Integer>;
+        Results[i].ClassName := DetectionObj.GetValue('class_name')
           .AsType<string>;
       end;
 
@@ -275,19 +219,19 @@ begin
     Canvas.Font.Size := 10;
     Canvas.Font.Style := [fsBold];
 
-    for var I := 0 to High(Detections) do
+    for var i := 0 to High(Detections) do
     begin
-      X1 := Round(Detections[I].BBox[0] * ScaleX);
-      Y1 := Round(Detections[I].BBox[1] * ScaleY);
-      X2 := Round(Detections[I].BBox[2] * ScaleX);
-      Y2 := Round(Detections[I].BBox[3] * ScaleY);
+      X1 := Round(Detections[i].BBox[0] * ScaleX);
+      Y1 := Round(Detections[i].BBox[1] * ScaleY);
+      X2 := Round(Detections[i].BBox[2] * ScaleX);
+      Y2 := Round(Detections[i].BBox[3] * ScaleY);
 
       // バウンディングボックス描画
       Canvas.Rectangle(X1, Y1, X2, Y2);
 
       // ラベル描画
-      Text := Format('%s: %.1f%%', [Detections[I].ClassName,
-        Detections[I].Confidence * 100]);
+      Text := Format('%s: %.1f%%', [Detections[i].ClassName,
+        Detections[i].Confidence * 100]);
 
       Canvas.Brush.Color := clLime;
       Canvas.Brush.Style := bsSolid;
@@ -323,6 +267,15 @@ procedure TForm1.LogMessage(const Msg: string);
 begin
   Memo2.Lines.Add(Format('[%s] %s', [FormatDateTime('hh:nn:ss', Now), Msg]));
   Memo2.Perform(EM_SCROLLCARET, 0, 0);
+end;
+
+procedure TForm1.TrackBar1Change(Sender: TObject);
+var
+  data: Double;
+begin
+  data := TrackBar1.Position / 100;
+  lblConfidence.Caption := data.ToString;
+  PythonDelphiVar2.Value := data;
 end;
 
 end.
