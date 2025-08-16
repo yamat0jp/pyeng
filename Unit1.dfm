@@ -76,9 +76,9 @@ object Form1: TForm1
       
         'sys.path.append("C:\\Users\\yamat\\AppData\\Local\\Packages\\Pyt' +
         'honSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\loc' +
-        'al-packages\\Python313\\Scripts")'
+        'al-packages\\Python313\\site-packages")'
       'import json'
-      'from ultralytics import *'
+      'from ultralytics.models import YOLO'
       'import numpy as np'
       ''
       
@@ -176,33 +176,5 @@ object Form1: TForm1
     VarName = 'image'
     Left = 288
     Top = 448
-  end
-  object PythonModule1: TPythonModule
-    Engine = PythonEngine1
-    ModuleName = 'ultralytics'
-    Errors = <>
-    Left = 288
-    Top = 392
-  end
-  object PythonModule2: TPythonModule
-    Engine = PythonEngine1
-    ModuleName = 'numpy'
-    Errors = <>
-    Left = 400
-    Top = 448
-  end
-  object PythonModule3: TPythonModule
-    Engine = PythonEngine1
-    ModuleName = 'torch'
-    Errors = <>
-    Left = 400
-    Top = 392
-  end
-  object PythonModule4: TPythonModule
-    Engine = PythonEngine1
-    ModuleName = 'YOLO'
-    Errors = <>
-    Left = 504
-    Top = 400
   end
 end

@@ -43,10 +43,6 @@ type
     PythonGUIInputOutput1: TPythonGUIInputOutput;
     PythonDelphiVar1: TPythonDelphiVar;
     Memo3: TMemo;
-    PythonModule1: TPythonModule;
-    PythonModule2: TPythonModule;
-    PythonModule3: TPythonModule;
-    PythonModule4: TPythonModule;
     procedure btnDetectClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
