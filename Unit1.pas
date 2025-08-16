@@ -44,6 +44,9 @@ type
     PythonDelphiVar1: TPythonDelphiVar;
     Memo3: TMemo;
     PythonDelphiVar2: TPythonDelphiVar;
+    Edit1: TEdit;
+    PythonDelphiVar3: TPythonDelphiVar;
+    Label1: TLabel;
     procedure btnDetectClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -77,7 +80,7 @@ begin
     Exit;
   end;
 
-  Image1.Picture.LoadFromFile(OpenPictureDialog1.FileName);
+  PythonDelphiVar3.Value:=Edit1.Text;
 
   btnDetect.Enabled := False;
   try
@@ -98,6 +101,7 @@ begin
         Detections[i].BBox[0], Detections[i].BBox[1], Detections[i].BBox[2],
         Detections[i].BBox[3]]));
 
+    Image1.Picture.LoadFromFile(OpenPictureDialog1.FileName);
     // åüèoåãâ ÇâÊëúÇ…ï`âÊ
     DrawDetections(Detections);
 

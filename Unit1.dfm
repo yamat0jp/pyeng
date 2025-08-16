@@ -28,6 +28,13 @@ object Form1: TForm1
     Proportional = True
     Stretch = True
   end
+  object Label1: TLabel
+    Left = 8
+    Top = 504
+    Width = 68
+    Height = 15
+    Caption = 'Module Path'
+  end
   object btnDetect: TButton
     Left = 158
     Top = 456
@@ -74,10 +81,7 @@ object Form1: TForm1
     Height = 369
     Lines.Strings = (
       'import sys'
-      
-        'sys.path.append("C:\\Users\\yamat\\AppData\\Local\\Packages\\Pyt' +
-        'honSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\loc' +
-        'al-packages\\Python313\\site-packages")'
+      'sys.path.append(path.value)'
       'import json'
       'from ultralytics.models import YOLO'
       'import numpy as np'
@@ -150,7 +154,7 @@ object Form1: TForm1
   end
   object Memo3: TMemo
     Left = 63
-    Top = 552
+    Top = 584
     Width = 267
     Height = 113
     Lines.Strings = (
@@ -158,6 +162,17 @@ object Form1: TForm1
     TabOrder = 5
     Visible = False
     WordWrap = False
+  end
+  object Edit1: TEdit
+    Left = 8
+    Top = 539
+    Width = 328
+    Height = 23
+    TabOrder = 6
+    Text = 
+      'C:\\Users\\yamat\\AppData\\Local\\Packages\\PythonSoftwareFounda' +
+      'tion.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Pyth' +
+      'on313\\site-packages'
   end
   object OpenPictureDialog1: TOpenPictureDialog
     Left = 120
@@ -188,5 +203,12 @@ object Form1: TForm1
     VarName = 'threshold'
     Left = 288
     Top = 520
+  end
+  object PythonDelphiVar3: TPythonDelphiVar
+    Engine = PythonEngine1
+    Module = '__main__'
+    VarName = 'path'
+    Left = 288
+    Top = 592
   end
 end
