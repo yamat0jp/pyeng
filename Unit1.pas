@@ -24,8 +24,8 @@ type
     FModelPath: string;
   public
     constructor Create;
-    function DetectObjects(const ImagePath: string;
-      ConfThreshold: Double = 0.25): TArray<TDetectionResult>;
+    function DetectObjects(const ImagePath, Output: string)
+      : TArray<TDetectionResult>;
     property PythonPath: string read FPythonPath write FPythonPath;
     property ScriptPath: string read FScriptPath write FScriptPath;
     property ModelPath: string read FModelPath write FModelPath;
@@ -75,7 +75,6 @@ var
   SI: TStartupInfo;
   PI: TProcessInformation;
   StdOutPipeRead, StdOutPipeWrite: THandle;
-  Handle: THandle;
   Buffer: array [0 .. 255] of AnsiChar;
   BytesRead: Cardinal;
   WorkDir: string;
@@ -131,8 +130,8 @@ end;
 procedure TForm1.btnDetectClick(Sender: TObject);
 var
   Detections: TArray<TDetectionResult>;
-  I: Integer;
   ConfThreshold: Double;
+  evaldata: string;
 begin
   if FCurrentImagePath = '' then
   begin
@@ -147,11 +146,11 @@ begin
     ConfThreshold := TrackBar1.Position / 100.0;
     PythonDelphiVar1.Value := OpenPictureDialog1.FileName;
     PythonEngine1.ExecStrings(Memo1.Lines);
-    // Detections := FYOLODetector.DetectObjects(FCurrentImagePath, ConfThreshold);
+    Detections := FYOLODetector.DetectObjects(FCurrentImagePath, evaldata);
 
     LogMessage(Format('%d個のオブジェクトを検出しました', [Length(Detections)]));
 
-    for I := 0 to High(Detections) do
+    for var I := 0 to High(Detections) do
     begin
       LogMessage(Format('[%d] %s (信頼度: %.2f%%) - 座標: (%.0f, %.0f, %.0f, %.0f)',
         [I + 1, Detections[I].ClassName, Detections[I].Confidence * 100,
@@ -183,11 +182,9 @@ begin
   FModelPath := 'yolo11n.pt'; // YOLOモデルのパス
 end;
 
-function TYOLODetector.DetectObjects(const ImagePath: string;
-  ConfThreshold: Double): TArray<TDetectionResult>;
+function TYOLODetector.DetectObjects(const ImagePath, Output: string)
+  : TArray<TDetectionResult>;
 var
-  Command: string;
-  Output, s: string;
   JSONValue: TJSONValue;
   JSONObject: TJSONObject;
   DetectionsArray: TJSONArray;
@@ -200,17 +197,6 @@ begin
   SetLength(Results, 0);
 
   try
-    // Pythonスクリプトを実行するコマンドを構築
-    Command := Format('%s "%s" "%s" "%s" %.2f', [FPythonPath, FScriptPath,
-      ImagePath, FModelPath, ConfThreshold]);
-
-    // コマンドを実行してJSONを取得
-    if not RunCommand(Command, Output) then
-    begin
-      raise Exception.Create('Python スクリプトの実行に失敗しました');
-    end;
-
-    Delete(Output, 1, Pos('{', Output, 1) - 1);
     // JSON を解析
     JSONValue := TJSONObject.ParseJSONValue(Output);
     if not Assigned(JSONValue) then

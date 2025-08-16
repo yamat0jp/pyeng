@@ -121,7 +121,7 @@ object Form1: TForm1
       '            '#39'detections'#39': detections,'
       '            '#39'count'#39': len(detections)'
       '        }'
-      '        '
+      ''
       '    except Exception as e:'
       '        return {'
       '            '#39'success'#39': False,'
@@ -130,16 +130,14 @@ object Form1: TForm1
       ''
       ''
       '#    image_path = sys.argv[1]'
-      '    model_path = '#39'yolo11n.pt'#39
-      '    conf_threshold = 0.25'
+      'model_path = '#39'yolo11n.pt'#39
+      'conf_threshold = 0.25'
       ''
       '    # '#29289#20307#26908#20986#23455#34892
-      
-        '    result = detect_objects(image_path, model_path, conf_thresho' +
-        'ld)'
+      'result = detect_objects(image.value, model_path, conf_threshold)'
       ''
       '    # '#32080#26524#12434'JSON'#24418#24335#12391#20986#21147
-      '    print(json.dumps(result, ensure_ascii=False, indent=2))'
+      'print(json.dumps(result, ensure_ascii=False, indent=2))'
       '')
     ScrollBars = ssVertical
     TabOrder = 4
@@ -173,7 +171,7 @@ object Form1: TForm1
   object PythonDelphiVar1: TPythonDelphiVar
     Engine = PythonEngine1
     Module = '__main__'
-    VarName = 'image_path'
+    VarName = 'image'
     Left = 288
     Top = 448
   end
