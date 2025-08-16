@@ -72,15 +72,17 @@ object Form1: TForm1
     Width = 529
     Height = 369
     Lines.Strings = (
-      ''
-      '# yolo_detector.py'
       'import sys'
+      
+        'sys.path.append("C:\\Users\\yamat\\AppData\\Local\\Packages\\Pyt' +
+        'honSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\loc' +
+        'al-packages\\Python313\\Scripts")'
       'import json'
-      'from ultralytics import YOLO'
+      'from ultralytics import *'
       'import numpy as np'
       ''
       
-        'def detect_objects(image_path, model_path='#39'yolo11n.pt'#39', conf_thr' +
+        'def detect_objects(image_path, model_path='#39'yolo12n.pt'#39', conf_thr' +
         'eshold=0.25):'
       '    try:'
       '        # '#12514#12487#12523#12434#35501#12415#36796#12415
@@ -137,11 +139,11 @@ object Form1: TForm1
       'result = detect_objects(image.value, model_path, conf_threshold)'
       ''
       '    # '#32080#26524#12434'JSON'#24418#24335#12391#20986#21147
-      'print(json.dumps(result, ensure_ascii=False, indent=2))'
-      '')
+      'print(json.dumps(result, ensure_ascii=False, indent=2))')
     ScrollBars = ssVertical
     TabOrder = 4
     Visible = False
+    WordWrap = False
   end
   object Memo3: TMemo
     Left = 63
@@ -186,7 +188,21 @@ object Form1: TForm1
     Engine = PythonEngine1
     ModuleName = 'numpy'
     Errors = <>
-    Left = 408
+    Left = 400
+    Top = 448
+  end
+  object PythonModule3: TPythonModule
+    Engine = PythonEngine1
+    ModuleName = 'torch'
+    Errors = <>
+    Left = 400
     Top = 392
+  end
+  object PythonModule4: TPythonModule
+    Engine = PythonEngine1
+    ModuleName = 'YOLO'
+    Errors = <>
+    Left = 504
+    Top = 400
   end
 end

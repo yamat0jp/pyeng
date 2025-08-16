@@ -24,8 +24,7 @@ type
     FModelPath: string;
   public
     constructor Create;
-    function DetectObjects(const ImagePath, Output: string)
-      : TArray<TDetectionResult>;
+    function DetectObjects(const Output: string): TArray<TDetectionResult>;
     property PythonPath: string read FPythonPath write FPythonPath;
     property ScriptPath: string read FScriptPath write FScriptPath;
     property ModelPath: string read FModelPath write FModelPath;
@@ -46,13 +45,14 @@ type
     Memo3: TMemo;
     PythonModule1: TPythonModule;
     PythonModule2: TPythonModule;
+    PythonModule3: TPythonModule;
+    PythonModule4: TPythonModule;
     procedure btnDetectClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure Button1Click(Sender: TObject);
   private
     FYOLODetector: TYOLODetector;
-    FCurrentImagePath: string;
     procedure DrawDetections(const Detections: TArray<TDetectionResult>);
     procedure LogMessage(const Msg: string);
     { Private 宣言 }
@@ -131,9 +131,8 @@ procedure TForm1.btnDetectClick(Sender: TObject);
 var
   Detections: TArray<TDetectionResult>;
   ConfThreshold: Double;
-  evaldata: string;
 begin
-  if FCurrentImagePath = '' then
+  if Image1.Picture.Graphic.Empty then
   begin
     ShowMessage('まず画像を選択してください');
     Exit;
@@ -145,18 +144,17 @@ begin
 
     ConfThreshold := TrackBar1.Position / 100.0;
     PythonDelphiVar1.Value := OpenPictureDialog1.FileName;
+    Memo3.Lines.Clear;
     PythonEngine1.ExecStrings(Memo1.Lines);
-    Detections := FYOLODetector.DetectObjects(FCurrentImagePath, evaldata);
+    Detections := FYOLODetector.DetectObjects(Memo3.Text);
 
     LogMessage(Format('%d個のオブジェクトを検出しました', [Length(Detections)]));
 
     for var I := 0 to High(Detections) do
-    begin
       LogMessage(Format('[%d] %s (信頼度: %.2f%%) - 座標: (%.0f, %.0f, %.0f, %.0f)',
         [I + 1, Detections[I].ClassName, Detections[I].Confidence * 100,
         Detections[I].BBox[0], Detections[I].BBox[1], Detections[I].BBox[2],
         Detections[I].BBox[3]]));
-    end;
 
     // 検出結果を画像に描画
     DrawDetections(Detections);
@@ -182,7 +180,7 @@ begin
   FModelPath := 'yolo11n.pt'; // YOLOモデルのパス
 end;
 
-function TYOLODetector.DetectObjects(const ImagePath, Output: string)
+function TYOLODetector.DetectObjects(const Output: string)
   : TArray<TDetectionResult>;
 var
   JSONValue: TJSONValue;
@@ -248,10 +246,7 @@ end;
 procedure TForm1.Button1Click(Sender: TObject);
 begin
   if OpenPictureDialog1.Execute then
-  begin
-    FCurrentImagePath := OpenPictureDialog1.FileName;
-    Image1.Picture.LoadFromFile(FCurrentImagePath);
-  end;
+    Image1.Picture.LoadFromFile(OpenPictureDialog1.FileName);
 end;
 
 procedure TForm1.DrawDetections(const Detections: TArray<TDetectionResult>);
@@ -267,7 +262,6 @@ begin
     Exit;
 
   // 元画像を再読み込み
-  Image1.Picture.LoadFromFile(FCurrentImagePath);
 
   Bitmap := TBitmap.Create;
   try
