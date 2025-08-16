@@ -77,6 +77,8 @@ begin
     Exit;
   end;
 
+  Image1.Picture.LoadFromFile(OpenPictureDialog1.FileName);
+
   btnDetect.Enabled := False;
   try
     LogMessage('YOLOŒŸo‚ğŠJn...');

@@ -29,7 +29,7 @@ object Form1: TForm1
     Stretch = True
   end
   object btnDetect: TButton
-    Left = 160
+    Left = 158
     Top = 456
     Width = 75
     Height = 25
