@@ -10,6 +10,7 @@ object Form1: TForm1
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  Menu = MainMenu1
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   DesignSize = (
@@ -223,5 +224,34 @@ object Form1: TForm1
     VarName = 'model'
     Left = 432
     Top = 592
+  end
+  object MainMenu1: TMainMenu
+    Left = 344
+    Top = 16
+    object menu: TMenuItem
+      Caption = 'menu'
+      object file1: TMenuItem
+        Caption = 'file'
+        OnClick = Button1Click
+      end
+      object execute1: TMenuItem
+        Caption = 'execute'
+        OnClick = btnDetectClick
+      end
+      object N1: TMenuItem
+        Caption = '-'
+      end
+      object end1: TMenuItem
+        Caption = 'end'
+        OnClick = Button2Click
+      end
+    end
+    object help: TMenuItem
+      Caption = 'help'
+      object version1: TMenuItem
+        Caption = 'version'
+        OnClick = version1Click
+      end
+    end
   end
 end

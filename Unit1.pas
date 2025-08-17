@@ -7,7 +7,7 @@ uses
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, PythonEngine,
   Vcl.ComCtrls,
-  Vcl.ExtCtrls, Vcl.ExtDlgs, Vcl.PythonGUIInputOutput;
+  Vcl.ExtCtrls, Vcl.ExtDlgs, Vcl.PythonGUIInputOutput, Vcl.Menus;
 
 type
   TDetectionResult = record
@@ -38,6 +38,14 @@ type
     Label1: TLabel;
     Button2: TButton;
     PythonDelphiVar4: TPythonDelphiVar;
+    MainMenu1: TMainMenu;
+    help: TMenuItem;
+    version1: TMenuItem;
+    menu: TMenuItem;
+    file1: TMenuItem;
+    execute1: TMenuItem;
+    N1: TMenuItem;
+    end1: TMenuItem;
     procedure btnDetectClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -45,6 +53,7 @@ type
     procedure TrackBar1Change(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Edit1Change(Sender: TObject);
+    procedure version1Click(Sender: TObject);
   private
     procedure DrawDetections(const Detections: TArray<TDetectionResult>);
     procedure LogMessage(const Msg: string);
@@ -264,12 +273,13 @@ begin
 end;
 
 procedure TForm1.FormDestroy(Sender: TObject);
+var
+  ini: TIniFile;
 begin
-  var
   ini := TIniFile.Create(ininame);
   try
     ini.WriteString('module', 'path', Edit1.Text);
-    ini.WriteString('module', 'yolo', PythonDelphiVar4.Value);
+    ini.WriteString('module', 'yolo', PythonDelphiVar4.ValueAsString);
   finally
     ini.Free;
   end;
@@ -288,6 +298,11 @@ begin
   data := TrackBar1.Position / 100;
   lblConfidence.Caption := data.ToString;
   PythonDelphiVar2.Value := data;
+end;
+
+procedure TForm1.version1Click(Sender: TObject);
+begin
+  Showmessage('version 1.01');
 end;
 
 { TDetectionResult }
