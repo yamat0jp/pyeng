@@ -47,11 +47,13 @@ type
     Edit1: TEdit;
     PythonDelphiVar3: TPythonDelphiVar;
     Label1: TLabel;
+    Button2: TButton;
     procedure btnDetectClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure TrackBar1Change(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
   private
     FYOLODetector: TYOLODetector;
     procedure DrawDetections(const Detections: TArray<TDetectionResult>);
@@ -77,7 +79,7 @@ procedure TForm1.btnDetectClick(Sender: TObject);
 var
   Detections: TArray<TDetectionResult>;
 begin
-  if Image1.Picture.Graphic.Empty then
+  if not FileExists(OpenPictureDialog1.FileName) then
   begin
     ShowMessage('‚Ü‚¸‰æ‘œ‚ð‘I‘ð‚µ‚Ä‚­‚¾‚³‚¢');
     Exit;
@@ -196,6 +198,11 @@ procedure TForm1.Button1Click(Sender: TObject);
 begin
   if OpenPictureDialog1.Execute then
     Image1.Picture.LoadFromFile(OpenPictureDialog1.FileName);
+end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+begin
+  Close;
 end;
 
 procedure TForm1.DrawDetections(const Detections: TArray<TDetectionResult>);
