@@ -40,6 +40,16 @@ object Form1: TForm1
     Height = 15
     Caption = 'Module Path'
   end
+  object Label2: TLabel
+    Left = 23
+    Top = 584
+    Width = 95
+    Height = 135
+    Caption = 
+      #35613#36766':'#13#10'  [Modules]'#13#10'  PythonForDelphi'#13#10'  Python && YOLO'#13#10'  [Upload' +
+      ']'#13#10'  Vector'#13#10'  Github'#13#10'  [Language]'#13#10'  Delphi'
+    WordWrap = True
+  end
   object btnDetect: TButton
     Left = 158
     Top = 456
@@ -151,8 +161,8 @@ object Form1: TForm1
     WordWrap = False
   end
   object Memo3: TMemo
-    Left = 63
-    Top = 584
+    Left = 400
+    Top = 501
     Width = 267
     Height = 113
     Lines.Strings = (

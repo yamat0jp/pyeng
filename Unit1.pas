@@ -46,6 +46,7 @@ type
     execute1: TMenuItem;
     N1: TMenuItem;
     end1: TMenuItem;
+    Label2: TLabel;
     procedure btnDetectClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -76,7 +77,7 @@ uses JSON, Jpeg, PngImage, System.Generics.Collections, System.StrUtils,
 
 const
   ininame = '.\localizeYOLO.ini';
-  yolo = '.\\yolo11n.pt';
+  yolo = '.\yolo11n.pt';
 
 procedure TForm1.btnDetectClick(Sender: TObject);
 var
@@ -265,7 +266,7 @@ begin
   ini := TIniFile.Create(ininame);
   try
     Edit1.Text := ini.ReadString('module', 'path',
-      'C:\\Users\\yamat\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages');
+      'C:\Users\yamat\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages');
     PythonDelphiVar1.Value := ini.ReadString('module', 'yolo', 'yolo11n.pt');
   finally
     ini.Free;
