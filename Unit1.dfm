@@ -138,9 +138,7 @@ object Form1: TForm1
       '        }'
       ''
       ''
-      '#    image_path = sys.argv[1]'
       'model_path = '#39'.\\yolo11n.pt'#39
-      'conf_threshold = 0.25'
       ''
       '    # '#29289#20307#26908#20986#23455#34892
       

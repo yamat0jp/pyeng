@@ -17,19 +17,6 @@ type
     ClassName: string;
   end;
 
-  TYOLODetector = class
-  private
-    FPythonPath: string;
-    FScriptPath: string;
-    FModelPath: string;
-  public
-    constructor Create;
-    function DetectObjects(const Output: string): TArray<TDetectionResult>;
-    property PythonPath: string read FPythonPath write FPythonPath;
-    property ScriptPath: string read FScriptPath write FScriptPath;
-    property ModelPath: string read FModelPath write FModelPath;
-  end;
-
   TForm1 = class(TForm)
     btnDetect: TButton;
     TrackBar1: TTrackBar;
@@ -55,7 +42,6 @@ type
     procedure TrackBar1Change(Sender: TObject);
     procedure Button2Click(Sender: TObject);
   private
-    FYOLODetector: TYOLODetector;
     procedure DrawDetections(const Detections: TArray<TDetectionResult>);
     procedure LogMessage(const Msg: string);
     { Private 宣言 }
@@ -63,12 +49,15 @@ type
     { Public 宣言 }
   end;
 
+function DetectObjects(const Output: string): TArray<TDetectionResult>;
+
 var
   Form1: TForm1;
 
 implementation
 
-uses JSON, Jpeg, System.Generics.Collections, System.StrUtils, IniFiles;
+uses JSON, Jpeg, PngImage, System.Generics.Collections, System.StrUtils,
+  IniFiles;
 
 {$R *.dfm}
 
@@ -96,7 +85,7 @@ begin
     PythonEngine1.ExecStrings(Memo1.Lines);
     for var i := 1 to 3 do
       Memo3.Lines.Delete(0);
-    Detections := FYOLODetector.DetectObjects(Memo3.Text);
+    Detections := DetectObjects(Memo3.Text);
 
     LogMessage(Format('%d個のオブジェクトを検出しました', [Length(Detections)]));
 
@@ -121,18 +110,7 @@ begin
   btnDetect.Enabled := True;
 end;
 
-{ TYOLODetector }
-
-constructor TYOLODetector.Create;
-begin
-  inherited;
-  FPythonPath := 'python'; // Pythonのパス
-  FScriptPath := 'yolo_detector.py'; // スクリプトのパス
-  FModelPath := 'yolo11n.pt'; // YOLOモデルのパス
-end;
-
-function TYOLODetector.DetectObjects(const Output: string)
-  : TArray<TDetectionResult>;
+function DetectObjects(const Output: string): TArray<TDetectionResult>;
 var
   JSONValue: TJSONValue;
   JSONObject: TJSONObject;
@@ -140,7 +118,6 @@ var
   DetectionObj: TJSONObject;
   BBoxArray: TJSONArray;
   Results: TArray<TDetectionResult>;
-  i: Integer;
   Success: Boolean;
 begin
   SetLength(Results, 0);
@@ -164,7 +141,7 @@ begin
       DetectionsArray := JSONObject.GetValue('detections') as TJSONArray;
       SetLength(Results, DetectionsArray.Count);
 
-      for i := 0 to DetectionsArray.Count - 1 do
+      for var i := 0 to DetectionsArray.Count - 1 do
       begin
         DetectionObj := DetectionsArray.Items[i] as TJSONObject;
         BBoxArray := DetectionObj.GetValue('bbox') as TJSONArray;
@@ -267,9 +244,7 @@ end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  FYOLODetector := TYOLODetector.Create;
-  TrackBar1.Position := 25; // 0.25の信頼度閾値
-  lblConfidence.Caption := '0.25';
+  TrackBar1Change(nil);
   LogMessage('YOLO物体検出アプリケーションを開始しました');
   LogMessage('Python環境とUltralyticsがインストールされている必要があります');
   var
@@ -284,7 +259,6 @@ end;
 
 procedure TForm1.FormDestroy(Sender: TObject);
 begin
-  FYOLODetector.Free;
   var
   ini := TIniFile.Create(ininame);
   try
