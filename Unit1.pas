@@ -193,7 +193,10 @@ end;
 procedure TForm1.Button1Click(Sender: TObject);
 begin
   if OpenPictureDialog1.Execute then
+  begin
+    btnDetect.Enabled := true;
     Image1.Picture.LoadFromFile(OpenPictureDialog1.FileName);
+  end;
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
