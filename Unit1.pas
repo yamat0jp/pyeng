@@ -97,7 +97,9 @@ begin
 
     PythonDelphiVar1.Value := OpenPictureDialog1.FileName;
     if FileExists(yolo) then
-      PythonDelphiVar4.Value := yolo;
+      PythonDelphiVar4.Value := yolo
+    else
+      PythonDelphiVar4.Value := 'yolo11n.pt';
     Memo3.Lines.Clear;
     PythonEngine1.ExecStrings(Memo1.Lines);
     for var i := 1 to 3 do
