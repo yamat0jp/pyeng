@@ -37,6 +37,7 @@ type
     PythonDelphiVar3: TPythonDelphiVar;
     Label1: TLabel;
     Button2: TButton;
+    PythonDelphiVar4: TPythonDelphiVar;
     procedure btnDetectClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -66,6 +67,7 @@ uses JSON, Jpeg, PngImage, System.Generics.Collections, System.StrUtils,
 
 const
   ininame = '.\localizeYOLO.ini';
+  yolo = '.\\yolo11n.pt';
 
 procedure TForm1.btnDetectClick(Sender: TObject);
 var
@@ -84,6 +86,8 @@ begin
     LogMessage('YOLOåüèoÇäJén...');
 
     PythonDelphiVar1.Value := OpenPictureDialog1.FileName;
+    if FileExists(yolo) then
+      PythonDelphiVar4.Value := yolo;
     Memo3.Lines.Clear;
     PythonEngine1.ExecStrings(Memo1.Lines);
     for var i := 1 to 3 do
@@ -253,6 +257,7 @@ begin
   try
     Edit1.Text := ini.ReadString('module', 'path',
       'C:\\Users\\yamat\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages');
+    PythonDelphiVar1.Value := ini.ReadString('module', 'yolo', 'yolo11n.pt');
   finally
     ini.Free;
   end;
@@ -264,6 +269,7 @@ begin
   ini := TIniFile.Create(ininame);
   try
     ini.WriteString('module', 'path', Edit1.Text);
+    ini.WriteString('module', 'yolo', PythonDelphiVar4.Value);
   finally
     ini.Free;
   end;

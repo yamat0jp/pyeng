@@ -137,13 +137,10 @@ object Form1: TForm1
       '            '#39'error'#39': str(e)'
       '        }'
       ''
-      ''
-      'model_path = '#39'.\\yolo11n.pt'#39
-      ''
       '    # '#29289#20307#26908#20986#23455#34892
       
-        'result = detect_objects(image.value, model_path, threshold.value' +
-        ')'
+        'result = detect_objects(image.value, model.value, threshold.valu' +
+        'e)'
       ''
       '    # '#32080#26524#12434'JSON'#24418#24335#12391#20986#21147
       'print(json.dumps(result, ensure_ascii=False, indent=2))')
@@ -218,6 +215,13 @@ object Form1: TForm1
     Module = '__main__'
     VarName = 'path'
     Left = 288
+    Top = 592
+  end
+  object PythonDelphiVar4: TPythonDelphiVar
+    Engine = PythonEngine1
+    Module = '__main__'
+    VarName = 'model'
+    Left = 432
     Top = 592
   end
 end
