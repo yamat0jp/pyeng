@@ -11,10 +11,12 @@ uses
 
 type
   TDetectionResult = record
-    BBox: array [0 .. 3] of Double; // x1, y1, x2, y2
+  public
     Confidence: Double;
     ClassID: Integer;
     ClassName: string;
+    Rect: TRect;
+    constructor Create(data: array of Double);
   end;
 
   TForm1 = class(TForm)
@@ -41,6 +43,7 @@ type
     procedure Button1Click(Sender: TObject);
     procedure TrackBar1Change(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure Edit1Change(Sender: TObject);
   private
     procedure DrawDetections(const Detections: TArray<TDetectionResult>);
     procedure LogMessage(const Msg: string);
@@ -90,10 +93,10 @@ begin
     LogMessage(Format('%d個のオブジェクトを検出しました', [Length(Detections)]));
 
     for var i := 0 to High(Detections) do
-      LogMessage(Format('[%d] %s (信頼度: %.2f%%) - 座標: (%.0f, %.0f, %.0f, %.0f)',
+      LogMessage(Format('[%d] %s (信頼度: %.2f%%) - 座標: (%d, %d, %d, %d)',
         [i + 1, Detections[i].ClassName, Detections[i].Confidence * 100,
-        Detections[i].BBox[0], Detections[i].BBox[1], Detections[i].BBox[2],
-        Detections[i].BBox[3]]));
+        Detections[i].Rect.Left, Detections[i].Rect.Top, Detections[i].Rect.Top,
+        Detections[i].Rect.Bottom]));
 
     Image1.Picture.LoadFromFile(OpenPictureDialog1.FileName);
     // 検出結果を画像に描画
@@ -146,10 +149,9 @@ begin
         DetectionObj := DetectionsArray.Items[i] as TJSONObject;
         BBoxArray := DetectionObj.GetValue('bbox') as TJSONArray;
 
-        Results[i].BBox[0] := BBoxArray.Items[0].AsType<Double>;
-        Results[i].BBox[1] := BBoxArray.Items[1].AsType<Double>;
-        Results[i].BBox[2] := BBoxArray.Items[2].AsType<Double>;
-        Results[i].BBox[3] := BBoxArray.Items[3].AsType<Double>;
+        Results[i].Create([BBoxArray.Items[0].AsType<Double>,
+          BBoxArray.Items[1].AsType<Double>, BBoxArray.Items[2].AsType<Double>,
+          BBoxArray.Items[3].AsType<Double>]);
         Results[i].Confidence := DetectionObj.GetValue('confidence')
           .AsType<Double>;
         Results[i].ClassID := DetectionObj.GetValue('class_id').AsType<Integer>;
@@ -186,8 +188,7 @@ procedure TForm1.DrawDetections(const Detections: TArray<TDetectionResult>);
 var
   Bitmap: TBitmap;
   Canvas: TCanvas;
-  X1, Y1, X2, Y2: Integer;
-  ScaleX, ScaleY: Double;
+  x1, y1: Integer;
   Text: string;
   TextRect: TRect;
 begin
@@ -201,10 +202,6 @@ begin
     Bitmap.Assign(Image1.Picture.Graphic);
     Canvas := Bitmap.Canvas;
 
-    // スケール計算
-    ScaleX := Bitmap.Width / Image1.Picture.Width;
-    ScaleY := Bitmap.Height / Image1.Picture.Height;
-
     Canvas.Pen.Color := clLime;
     Canvas.Pen.Width := 3;
     Canvas.Brush.Style := TBrushStyle.bsClear;
@@ -214,25 +211,24 @@ begin
 
     for var i := 0 to High(Detections) do
     begin
-      X1 := Round(Detections[i].BBox[0] * ScaleX);
-      Y1 := Round(Detections[i].BBox[1] * ScaleY);
-      X2 := Round(Detections[i].BBox[2] * ScaleX);
-      Y2 := Round(Detections[i].BBox[3] * ScaleY);
 
       // バウンディングボックス描画
-      Canvas.Rectangle(X1, Y1, X2, Y2);
+      Canvas.Rectangle(Detections[i].Rect);
 
       // ラベル描画
       Text := Format('%s: %.1f%%', [Detections[i].ClassName,
         Detections[i].Confidence * 100]);
 
+      x1 := Detections[i].Rect.Left;
+      y1 := Detections[i].Rect.Top;
+
       Canvas.Brush.Color := clLime;
       Canvas.Brush.Style := bsSolid;
-      TextRect := Rect(X1, Y1 - 20, X1 + Canvas.TextWidth(Text) + 4, Y1);
+      TextRect := Rect(x1, y1 - 20, x1 + Canvas.TextWidth(Text) + 4, y1);
       Canvas.FillRect(TextRect);
 
       Canvas.Font.Color := clBlack;
-      Canvas.TextOut(X1 + 2, Y1 - 18, Text);
+      Canvas.TextOut(x1 + 2, y1 - 18, Text);
       Canvas.Brush.Style := TBrushStyle.bsClear;
     end;
 
@@ -240,6 +236,11 @@ begin
   finally
     Bitmap.Free;
   end;
+end;
+
+procedure TForm1.Edit1Change(Sender: TObject);
+begin
+  Edit1.Hint := Edit1.Text;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -281,6 +282,17 @@ begin
   data := TrackBar1.Position / 100;
   lblConfidence.Caption := data.ToString;
   PythonDelphiVar2.Value := data;
+end;
+
+{ TDetectionResult }
+
+constructor TDetectionResult.Create(data: array of Double);
+var
+  ints: array [0 .. 3] of Integer;
+begin
+  for var i := 0 to 3 do
+    ints[i] := Round(data[i]);
+  Rect := TRect.Create(ints[0], ints[1], ints[2], ints[3]);
 end;
 
 end.

@@ -168,7 +168,10 @@ object Form1: TForm1
     Top = 539
     Width = 328
     Height = 23
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 6
+    OnChange = Edit1Change
   end
   object Button2: TButton
     Left = 270
