@@ -8,7 +8,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, PythonEngine,
   Vcl.ComCtrls,
   Vcl.ExtCtrls, Vcl.ExtDlgs, Vcl.PythonGUIInputOutput, Vcl.Menus,
-  Vcl.Imaging.jpeg;
+  Vcl.Imaging.jpeg, Vcl.Buttons;
 
 type
   TDetectionResult = record
@@ -48,6 +48,7 @@ type
     N1: TMenuItem;
     end1: TMenuItem;
     Label2: TLabel;
+    SpeedButton1: TSpeedButton;
     procedure btnDetectClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -56,6 +57,8 @@ type
     procedure Button2Click(Sender: TObject);
     procedure Edit1Change(Sender: TObject);
     procedure version1Click(Sender: TObject);
+    procedure BitBtn1Click(Sender: TObject);
+    procedure SpeedButton1Click(Sender: TObject);
   private
     procedure DrawDetections(const Detections: TArray<TDetectionResult>);
     procedure LogMessage(const Msg: string);
@@ -79,6 +82,11 @@ uses JSON, PngImage, System.Generics.Collections, System.StrUtils,
 const
   ininame = '.\localizeYOLO.ini';
   yolo = '.\yolo11n.pt';
+
+procedure TForm1.BitBtn1Click(Sender: TObject);
+begin
+  Memo1.Lines.Clear;
+end;
 
 procedure TForm1.btnDetectClick(Sender: TObject);
 var
@@ -300,6 +308,11 @@ begin
   Memo2.Perform(EM_SCROLLCARET, 0, 0);
 end;
 
+procedure TForm1.SpeedButton1Click(Sender: TObject);
+begin
+  Memo2.Lines.Clear;
+end;
+
 procedure TForm1.TrackBar1Change(Sender: TObject);
 var
   data: Double;
@@ -311,7 +324,7 @@ end;
 
 procedure TForm1.version1Click(Sender: TObject);
 begin
-  Showmessage('version 1.01');
+  Showmessage('version 1.0.1');
 end;
 
 { TDetectionResult }

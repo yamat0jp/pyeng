@@ -20,7 +20,7 @@ object Form1: TForm1
   TextHeight = 15
   object lblConfidence: TLabel
     Left = 256
-    Top = 368
+    Top = 400
     Width = 74
     Height = 15
     Caption = 'lblConfidence'
@@ -64287,6 +64287,15 @@ object Form1: TForm1
       ']'#13#10'  Vector'#13#10'  Github'#13#10'  [Language]'#13#10'  Delphi'
     WordWrap = True
   end
+  object SpeedButton1: TSpeedButton
+    Left = 270
+    Top = 351
+    Width = 60
+    Height = 22
+    Caption = 'Clear'
+    Flat = True
+    OnClick = SpeedButton1Click
+  end
   object btnDetect: TButton
     Left = 158
     Top = 456
@@ -64298,8 +64307,8 @@ object Form1: TForm1
     OnClick = btnDetectClick
   end
   object TrackBar1: TTrackBar
-    Left = 16
-    Top = 360
+    Left = 23
+    Top = 396
     Width = 217
     Height = 45
     Max = 100
