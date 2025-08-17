@@ -3,7 +3,7 @@
         <ProjectGuid>{CF11E4B8-9281-49E7-AB9B-D2B530B66728}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
-        <Projects Include="Project1.dproj">
+        <Projects Include="localizeYOLO.dproj">
             <Dependencies/>
         </Projects>
         <Projects Include="Project2.dproj">
@@ -17,14 +17,14 @@
             <Default.Personality/>
         </BorlandProject>
     </ProjectExtensions>
-    <Target Name="Project1">
-        <MSBuild Projects="Project1.dproj"/>
+    <Target Name="localizeYOLO">
+        <MSBuild Projects="localizeYOLO.dproj"/>
     </Target>
-    <Target Name="Project1:Clean">
-        <MSBuild Projects="Project1.dproj" Targets="Clean"/>
+    <Target Name="localizeYOLO:Clean">
+        <MSBuild Projects="localizeYOLO.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="Project1:Make">
-        <MSBuild Projects="Project1.dproj" Targets="Make"/>
+    <Target Name="localizeYOLO:Make">
+        <MSBuild Projects="localizeYOLO.dproj" Targets="Make"/>
     </Target>
     <Target Name="Project2">
         <MSBuild Projects="Project2.dproj"/>
@@ -36,13 +36,13 @@
         <MSBuild Projects="Project2.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="Project1;Project2"/>
+        <CallTarget Targets="localizeYOLO;Project2"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="Project1:Clean;Project2:Clean"/>
+        <CallTarget Targets="localizeYOLO:Clean;Project2:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="Project1:Make;Project2:Make"/>
+        <CallTarget Targets="localizeYOLO:Make;Project2:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

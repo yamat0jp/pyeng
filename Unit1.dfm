@@ -1,7 +1,7 @@
 object Form1: TForm1
   Left = 0
   Top = 0
-  Caption = 'Form1'
+  Caption = 'localize YOLO'
   ClientHeight = 786
   ClientWidth = 1025
   Color = clBtnFace
@@ -12,6 +12,9 @@ object Form1: TForm1
   Font.Style = []
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  DesignSize = (
+    1025
+    786)
   TextHeight = 15
   object lblConfidence: TLabel
     Left = 256
@@ -25,6 +28,7 @@ object Form1: TForm1
     Top = 32
     Width = 594
     Height = 697
+    Anchors = [akLeft, akTop, akRight, akBottom]
     Proportional = True
     Stretch = True
   end
@@ -41,7 +45,7 @@ object Form1: TForm1
     Width = 75
     Height = 25
     Caption = 'btnDetect'
-    TabOrder = 0
+    TabOrder = 1
     OnClick = btnDetectClick
   end
   object TrackBar1: TTrackBar
@@ -51,7 +55,7 @@ object Form1: TForm1
     Height = 45
     Max = 100
     Position = 25
-    TabOrder = 1
+    TabOrder = 2
     OnChange = TrackBar1Change
   end
   object Memo2: TMemo
@@ -59,10 +63,8 @@ object Form1: TForm1
     Top = 41
     Width = 314
     Height = 288
-    Lines.Strings = (
-      'Memo2')
     ScrollBars = ssBoth
-    TabOrder = 2
+    TabOrder = 3
     WordWrap = False
   end
   object Button1: TButton
@@ -70,8 +72,8 @@ object Form1: TForm1
     Top = 456
     Width = 75
     Height = 25
-    Caption = 'Button1'
-    TabOrder = 3
+    Caption = 'Picture'
+    TabOrder = 0
     OnClick = Button1Click
   end
   object Memo1: TMemo
@@ -87,7 +89,7 @@ object Form1: TForm1
       'import numpy as np'
       ''
       
-        'def detect_objects(image_path, model_path='#39'yolo12n.pt'#39', conf_thr' +
+        'def detect_objects(image_path, model_path='#39'yolo11n.pt'#39', conf_thr' +
         'eshold=0.25):'
       '    try:'
       '        # '#12514#12487#12523#12434#35501#12415#36796#12415
@@ -169,10 +171,6 @@ object Form1: TForm1
     Width = 328
     Height = 23
     TabOrder = 6
-    Text = 
-      'C:\\Users\\yamat\\AppData\\Local\\Packages\\PythonSoftwareFounda' +
-      'tion.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Pyth' +
-      'on313\\site-packages'
   end
   object OpenPictureDialog1: TOpenPictureDialog
     Left = 120

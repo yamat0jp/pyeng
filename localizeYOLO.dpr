@@ -1,4 +1,4 @@
-program Project1;
+program localizeYOLO;
 
 uses
   Vcl.Forms,

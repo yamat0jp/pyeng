@@ -66,9 +66,12 @@ var
 
 implementation
 
-uses JSON, Jpeg, System.Generics.Collections, System.StrUtils;
+uses JSON, Jpeg, System.Generics.Collections, System.StrUtils, IniFiles;
 
 {$R *.dfm}
+
+const
+  ininame = '.\localizeYOLO.ini';
 
 procedure TForm1.btnDetectClick(Sender: TObject);
 var
@@ -80,7 +83,7 @@ begin
     Exit;
   end;
 
-  PythonDelphiVar3.Value:=Edit1.Text;
+  PythonDelphiVar3.Value := Edit1.Text;
 
   btnDetect.Enabled := False;
   try
@@ -262,11 +265,26 @@ begin
   lblConfidence.Caption := '0.25';
   LogMessage('YOLO物体検出アプリケーションを開始しました');
   LogMessage('Python環境とUltralyticsがインストールされている必要があります');
+  var
+  ini := TIniFile.Create(ininame);
+  try
+    Edit1.Text := ini.ReadString('module', 'path',
+      'C:\\Users\\yamat\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages');
+  finally
+    ini.Free;
+  end;
 end;
 
 procedure TForm1.FormDestroy(Sender: TObject);
 begin
   FYOLODetector.Free;
+  var
+  ini := TIniFile.Create(ininame);
+  try
+    ini.WriteString('module', 'path', Edit1.Text);
+  finally
+    ini.Free;
+  end;
 end;
 
 procedure TForm1.LogMessage(const Msg: string);
