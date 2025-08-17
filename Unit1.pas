@@ -7,7 +7,8 @@ uses
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, PythonEngine,
   Vcl.ComCtrls,
-  Vcl.ExtCtrls, Vcl.ExtDlgs, Vcl.PythonGUIInputOutput, Vcl.Menus;
+  Vcl.ExtCtrls, Vcl.ExtDlgs, Vcl.PythonGUIInputOutput, Vcl.Menus,
+  Vcl.Imaging.jpeg;
 
 type
   TDetectionResult = record
@@ -70,7 +71,7 @@ var
 
 implementation
 
-uses JSON, Jpeg, PngImage, System.Generics.Collections, System.StrUtils,
+uses JSON, PngImage, System.Generics.Collections, System.StrUtils,
   IniFiles;
 
 {$R *.dfm}
@@ -260,11 +261,13 @@ begin
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
+var
+  ini: TIniFile;
 begin
   TrackBar1Change(nil);
   LogMessage('YOLO物体検出アプリケーションを開始しました');
   LogMessage('Python環境とUltralyticsがインストールされている必要があります');
-  var
+  LogMessage('README.txtに簡単な解説があります ご一読ください');
   ini := TIniFile.Create(ininame);
   try
     Edit1.Text := ini.ReadString('module', 'path',
